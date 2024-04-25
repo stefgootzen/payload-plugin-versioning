@@ -1,11 +1,12 @@
-import { buildConfig } from 'payload/config';
-import path from 'path';
-import Users from './collections/Users';
-import Examples from './collections/Examples';
+import { buildConfig } from 'payload/config'
+import path from 'path'
+import Users from './collections/Users'
+import Versions from './collections/Versions'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { webpackBundler } from '@payloadcms/bundler-webpack'
 import { slateEditor } from '@payloadcms/richtext-slate'
-import { samplePlugin } from '../../src/index'
+import Bases from './collections/Bases'
+import { withVersioning } from '../../src/plugin'
 
 export default buildConfig({
   admin: {
@@ -28,16 +29,25 @@ export default buildConfig({
     },
   },
   editor: slateEditor({}),
-  collections: [
-    Examples, Users,
-  ],
+  collections: [Users, Versions, Bases],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
   graphQL: {
     schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
   },
-  plugins: [samplePlugin({ enabled: true })],
+
+  plugins: [
+    withVersioning({
+      enabled: true,
+      relations: [
+        {
+          baseSlug: 'bases',
+          versionSlug: 'versions',
+        },
+      ],
+    }),
+  ],
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
   }),

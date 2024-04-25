@@ -4,6 +4,12 @@ export interface PluginTypes {
    * @default false
    */
   enabled?: boolean
+  relations: Relation[]
+}
+
+export type Relation = {
+  baseSlug: string
+  versionSlug: string
 }
 
 export interface NewCollectionTypes {
