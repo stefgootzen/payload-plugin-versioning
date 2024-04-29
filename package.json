@@ -1,12 +1,11 @@
 {
   "name": "@stefgootzen/payload-plugin-versioning",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": "https://github.com/stefgootzen/payload-plugin-versioning",
-  "description": "PayloadCMS plugin which applies a one-to-many version behaviour to collections.",
+  "description": "PayloadCMS plugin that setups all necessary fields and hooks to enable collection versioning.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["/dist",    "LICENSE.txt"
-  ],
+  "files": ["/dist", "LICENSE.txt"],
   "keywords": [
     "payload",
     "cms",
