@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@payloadcms/eslint-config": "^0.0.1",
+    "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "5.12.1",
     "@typescript-eslint/parser": "5.12.1",
     "axios": "^1.6.8",

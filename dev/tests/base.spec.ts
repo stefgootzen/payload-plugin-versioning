@@ -27,6 +27,7 @@ afterAll(async () => {
 })
 
 describe('Base', () => {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   beforeEach(async () => {})
   afterEach(async () => {
     await cleanupCollections()
