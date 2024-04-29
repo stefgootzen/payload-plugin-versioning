@@ -1,9 +1,8 @@
 {
-  "name": "@payloadcms/payload-plugin-template",
+  "name": "payload-plugin-versioning",
   "version": "0.0.0=1",
-  "homepage:": "https://payloadcms.com",
-  "repository": "git@github.com:payloadcms/payload-plugin-template.git",
-  "description": "Blank plugin template for Payload",
+  "repository": "https://github.com/stefgootzen/payload-plugin-versioning",
+  "description": "PayloadCMS plugin which applies a one-to-many version behaviour to collections.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "keywords": [
@@ -11,8 +10,8 @@
     "cms",
     "plugin",
     "typescript",
-    "react",
-    "template"
+    "one-to-many",
+    "versions"
   ],
   "scripts": {
     "build": "tsc",
@@ -22,7 +21,7 @@
     "clean": "rimraf dist && rimraf dev/yarn.lock",
     "prepublishOnly": "yarn clean && yarn build && cd dev && yarn test"
   },
-  "author": "dev@payloadcms.com",
+  "author": "stefgootzen@gmail.com",
   "license": "MIT",
   "peerDependencies": {
     "payload": "^2.0.0"
