@@ -4,8 +4,7 @@ PayloadCMS plugin that setups all necessary fields and hooks to enable collectio
 ## Installation
 - To be added in NPM register.
 
-## Usage
-Add the following to the `plugin` section of the payload config. Apply your own slugs.
+- Add the following to the `plugin` section of the payload config. Apply your own slugs.
 
 ```javascript
  withVersioning({
@@ -18,6 +17,13 @@ Add the following to the `plugin` section of the payload config. Apply your own 
   ],
 })
 ```
+
+## Payload Compatibility
+| Payload | Plugin-Versioning |
+|---------|-------------------|
+| 2.x     | Compatible        |
+| 3.x     | Untested          |
+
 
 ## Effects
 **_One-to-many_ relationship management:**
@@ -32,9 +38,7 @@ Add the following to the `plugin` section of the payload config. Apply your own 
 - Deletes all `versions` on `base` delete.
 
 ## Why use this instead of build-in versioning?
-Payload's build-in versioning is useful when you've got a concept of a (latest) _published_ document.
-
-This plugin is for you if versions are supposed to be "published".
+Payload's build-in versioning is useful when you've got a concept of a (latest) _published_ document. This plugin is for you if versions are supposed to be "published".
 
 ## Known limitations
 - Automatic create only works with no-required fields.
