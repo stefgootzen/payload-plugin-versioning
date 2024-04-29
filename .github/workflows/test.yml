@@ -16,6 +16,6 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: "Set up environment"
-        run: docker compose -f docker-compose.yml up -d --wait
+        run: docker compose -f ./docker-compose.yml up -d --wait
       - name: Run tests
         run: yarn run test
