@@ -4,6 +4,9 @@ on: [push, pull_request]
 
 jobs:
   tests:
+    defaults:
+      run:
+        working-directory: ./dev
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -11,8 +14,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-      - name: Navigate to dev
-        run: cd ./dev
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: "Set up environment"
