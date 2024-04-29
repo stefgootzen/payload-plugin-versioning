@@ -1,6 +1,6 @@
 {
   "name": "@stefgootzen/payload-plugin-versioning",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": "https://github.com/stefgootzen/payload-plugin-versioning",
   "description": "PayloadCMS plugin that sets up all necessary fields and hooks to enable collection versioning.",
   "main": "dist/index.js",
