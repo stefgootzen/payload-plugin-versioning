@@ -1,18 +1,19 @@
 # Payload-Plugin-Versioning
-PayloadCMS plugin that setups all necessary fields and hooks to enable collection versioning.
+PayloadCMS plugin that sets up all necessary fields and hooks to enable collection versioning.
 
 ## Installation
-- To be added in NPM register.
+1. Run `npm install @stefgootzen/payload-plugin-versioning` or `yarn add @stefgootzen/payload-plugin-versioning`.
 
-- Add the following to the `plugin` section of the payload config. Apply your own slugs.
+
+2. Add the following to the `plugin` section of the payload config. Use your own collections.
 
 ```javascript
  withVersioning({
   enabled: true,
   relations: [
     {
-      baseSlug: '[base-slug]',
-      versionSlug: '[version-slug]',
+      baseSlug: MyBaseCollection.slug,
+      versionSlug: MyVersionCollection.slug,
     },
   ],
 })
@@ -34,8 +35,9 @@ PayloadCMS plugin that setups all necessary fields and hooks to enable collectio
 - Adds `VersionNumber` field on _version_.
 
 **Creation and deletion hooks:**
-- Creates first `version` automatically on creation of `base`.
-- Deletes all `versions` on `base` delete.
+- On `Base` create: Creates first `version` and sets it on `base`.
+- On `version` delete: Deletes `version` on `base`.
+- On `Base` delete: Deletes all corresponding `versions`.
 
 ## Why use this instead of build-in versioning?
 Payload's build-in versioning is useful when you've got a concept of a (latest) _published_ document. This plugin is for you if versions are supposed to be "published".

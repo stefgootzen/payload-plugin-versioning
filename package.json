@@ -1,8 +1,8 @@
 {
   "name": "@stefgootzen/payload-plugin-versioning",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "repository": "https://github.com/stefgootzen/payload-plugin-versioning",
-  "description": "PayloadCMS plugin that setups all necessary fields and hooks to enable collection versioning.",
+  "description": "PayloadCMS plugin that sets up all necessary fields and hooks to enable collection versioning.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["/dist", "LICENSE.txt"],
