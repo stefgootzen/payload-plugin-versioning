@@ -5,7 +5,10 @@
   "description": "PayloadCMS plugin that sets up all necessary fields and hooks to enable collection versioning.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["/dist", "LICENSE.txt"],
+  "files": [
+    "/dist",
+    "LICENSE.txt"
+  ],
   "keywords": [
     "payload",
     "cms",
@@ -31,6 +34,7 @@
     "@payloadcms/eslint-config": "^0.0.1",
     "@typescript-eslint/eslint-plugin": "5.12.1",
     "@typescript-eslint/parser": "5.12.1",
+    "axios": "^1.6.8",
     "dotenv": "^8.2.0",
     "eslint": "^8.19.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -44,4 +48,3 @@
     "webpack": "^5.90.3"
   }
 }
-

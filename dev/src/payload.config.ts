@@ -14,6 +14,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     bundler: webpackBundler(),
+    disable: process.env.NODE_ENV === 'test',
     webpack: config => {
       const newConfig = {
         ...config,

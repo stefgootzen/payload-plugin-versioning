@@ -7,7 +7,10 @@ import {
   createRemoveVersionFromBase,
   createSetVersionNumber,
 } from './hooks/version'
-import { buildCreateFirstVersionOnBaseCreate, buildDeleteCorrespondingVersions } from './hooks/base'
+import {
+  buildCreateVersionIfPassedOnBaseCreate,
+  buildDeleteCorrespondingVersions,
+} from './hooks/base'
 
 type PluginType = (pluginOptions: PluginTypes) => Plugin
 
@@ -29,7 +32,7 @@ const modifyBaseDocumentConfig = (
   collection.hooks = {
     ...collection.hooks,
     afterChange: [
-      buildCreateFirstVersionOnBaseCreate(collectionPair),
+      buildCreateVersionIfPassedOnBaseCreate(collectionPair),
       ...(collection.hooks?.afterChange || []),
     ],
     afterDelete: [

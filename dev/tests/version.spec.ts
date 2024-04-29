@@ -44,6 +44,7 @@ describe('Version', () => {
       collection: 'versions',
       data: {
         base: base.id,
+        someField: 'someValue',
       },
     })
 
@@ -52,7 +53,7 @@ describe('Version', () => {
       id: base.id,
     })
 
-    expect(base.versions.length).toBe(2)
+    expect(base.versions.length).toBe(1)
   })
 
   it('creates versionNumbers based on the latest known (undeleted) version', async () => {
@@ -66,15 +67,21 @@ describe('Version', () => {
       id: base.id,
     })
 
-    expect(base?.versions).toBeInstanceOf(Array)
-    expect(base.versions!.length).toEqual(1)
-    expect(base.versions[0]?.versionNumber).toBe(1)
+    const version1 = await payload.create({
+      collection: 'versions',
+      data: {
+        base: base.id,
+        someField: 'someValue',
+      },
+    })
 
-    // First version is created automatically, this is tested in annotations.spec.ts
+    expect(version1.versionNumber).toBe(1)
+
     const version2 = await payload.create({
       collection: 'versions',
       data: {
         base: base.id,
+        someField: 'someValue',
       },
     })
 
@@ -89,6 +96,7 @@ describe('Version', () => {
       collection: 'versions',
       data: {
         base: base.id,
+        someField: 'someValue',
       },
     })
 

@@ -1,17 +1,32 @@
 import { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload/types'
 import { Relation, VersionDocument } from '../../types'
 
-export const buildCreateFirstVersionOnBaseCreate = (collectionPair: Relation) => {
+export const buildCreateVersionIfPassedOnBaseCreate = (collectionPair: Relation) => {
   const hook: CollectionAfterChangeHook = async ({ doc, operation, req }) => {
     if (operation !== 'create') return
 
-    const version = await req.payload.create({
-      collection: collectionPair.versionSlug,
-      data: {
-        // @ts-ignore
-        base: doc.id,
-      },
-    })
+    // We run this afterChange, so we can also place the base on the version we create.
+    const versionData = req.body?.version
+
+    if (!versionData) return doc
+
+    let version
+    try {
+      version = await req.payload.create({
+        collection: collectionPair.versionSlug,
+        data: {
+          // @ts-ignore
+          base: doc.id,
+          ...versionData,
+        },
+      })
+    } catch (e) {
+      await req.payload.delete({
+        collection: collectionPair.baseSlug,
+        id: doc.id,
+      })
+      return
+    }
 
     await req.payload.update({
       collection: collectionPair.baseSlug,

@@ -4,7 +4,13 @@ import { CollectionConfig } from 'payload/types'
 const Versions: CollectionConfig = {
   slug: 'versions',
   admin: {},
-  fields: [],
+  fields: [
+    {
+      name: 'someField',
+      type: 'text',
+      required: true,
+    },
+  ],
 }
 
 export default Versions
