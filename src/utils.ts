@@ -1,15 +1,12 @@
-import { Config } from 'payload/generated-types'
-import payload from 'payload'
+import { Payload } from 'payload'
+import { Document } from './types'
 
-type ValueOf<T> = T[keyof T]
-
-export type CollectionType = ValueOf<Config['collections']>
-
-export const isString = (resource: CollectionType | string) => {
-  return typeof resource === 'string' || resource instanceof String
+export const isString = (thing: any) => {
+  return typeof thing === 'string' || thing instanceof String
 }
 
-export const getResourceId = (resourceOrId: CollectionType | string): string => {
+// Extends document
+export const getResourceId = <T extends Document>(resourceOrId: T | string): string => {
   if (isString(resourceOrId)) {
     return resourceOrId as string
   }
@@ -18,18 +15,20 @@ export const getResourceId = (resourceOrId: CollectionType | string): string => 
   return resourceOrId.id
 }
 
-export const getResource = <CollectionType>(
-  resourceOrId: CollectionType | string,
-  collection: keyof Config['collections'],
-): Promise<CollectionType> => {
+export const getResource = async <T extends Document>(
+  resourceOrId: T | string,
+  collection: string,
+  payload: Payload,
+): Promise<T> => {
+  // @ts-ignore
   if (!isString(resourceOrId)) {
-    return resourceOrId
+    return resourceOrId as T
   }
 
   const options = {
-    collection,
-    id: resourceOrId,
+    collection: collection,
+    id: resourceOrId as string,
   }
 
-  return payload.findByID(options) as Promise<CollectionType>
+  return payload.findByID(options) as Promise<T>
 }

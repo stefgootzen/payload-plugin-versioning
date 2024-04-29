@@ -1,3 +1,4 @@
+import './dotenv'
 import { buildConfig } from 'payload/config'
 import path from 'path'
 import Users from './collections/Users'
@@ -6,6 +7,7 @@ import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { webpackBundler } from '@payloadcms/bundler-webpack'
 import { slateEditor } from '@payloadcms/richtext-slate'
 import Bases from './collections/Bases'
+// @ts-ignore
 import { withVersioning } from '../../src/plugin'
 
 export default buildConfig({
@@ -36,7 +38,6 @@ export default buildConfig({
   graphQL: {
     schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
   },
-
   plugins: [
     withVersioning({
       enabled: true,
@@ -50,5 +51,6 @@ export default buildConfig({
   ],
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
+    transactionOptions: false,
   }),
 })

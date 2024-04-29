@@ -7,11 +7,21 @@ export interface PluginTypes {
   relations: Relation[]
 }
 
+export type Document = {
+  id: string
+}
+
 export type Relation = {
   baseSlug: string
   versionSlug: string
 }
 
-export interface NewCollectionTypes {
+export interface BaseDocument extends Document {
   title: string
+  versions: (string | VersionDocument)[]
+}
+
+export interface VersionDocument extends Document {
+  versionNumber: string
+  base: string | BaseDocument
 }

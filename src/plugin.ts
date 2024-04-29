@@ -11,7 +11,7 @@ import { buildCreateFirstVersionOnBaseCreate, buildDeleteCorrespondingVersions }
 
 type PluginType = (pluginOptions: PluginTypes) => Plugin
 
-const modifyBaseCollectionConfig = (
+const modifyBaseDocumentConfig = (
   collection: CollectionConfig,
   collectionPair: Relation,
 ): CollectionConfig => {
@@ -22,7 +22,7 @@ const modifyBaseCollectionConfig = (
       type: 'relationship',
       relationTo: collectionPair.versionSlug,
       hasMany: true,
-      required: true,
+      required: false,
     },
   ]
 
@@ -53,6 +53,11 @@ const modifyVersionsCollectionConfig = (
       relationTo: collectionPair.baseSlug,
       hasMany: false,
       required: true,
+    },
+    {
+      name: 'versionNumber',
+      type: 'number',
+      required: false, // todo; try required true and set version to 1
     },
   ]
 
@@ -103,25 +108,25 @@ const getCollectionPairForCollectionConfig = (
 export const withVersioning =
   (pluginOptions: PluginTypes): Plugin =>
   incomingConfig => {
-    let config = { ...incomingConfig }
+    const config = { ...incomingConfig }
 
     if (pluginOptions.enabled === false) {
       return config
     }
 
-    config.collections = (config.collections || []).reduce((acc, collection) => {
+    config.collections = (config.collections || []).map(collection => {
       const pair = getCollectionPairForCollectionConfig(pluginOptions.relations, collection)
 
       if (pair?.type === 'base') {
-        collection = modifyBaseCollectionConfig(collection, pair.relation)
+        collection = modifyBaseDocumentConfig(collection, pair.relation)
       }
 
       if (pair?.type === 'version') {
         collection = modifyVersionsCollectionConfig(collection, pair.relation)
       }
 
-      return [...acc, collection]
-    }, [] as CollectionConfig[])
+      return collection
+    })
 
     return config
   }

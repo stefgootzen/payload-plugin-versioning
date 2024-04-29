@@ -1,19 +1,20 @@
 import {
-  Collection,
   CollectionAfterChangeHook,
   CollectionAfterDeleteHook,
   CollectionBeforeChangeHook,
 } from 'payload/types'
-import payload from 'payload'
-import { CollectionType, getResource, getResourceId } from '../../utils'
-import { Relation } from '../../types'
+// import payload from 'payload'
+import { getResource, getResourceId } from '../../utils'
+import { BaseDocument, Relation, VersionDocument } from '../../types'
 
-export const getLatestVersionForBase = async (base: any): Promise<any | null> => {
+export const getLatestVersionForBase = async <T extends BaseDocument, I extends VersionDocument>(
+  base: T,
+): Promise<I | null> => {
   if (!base.versions || base.versions.length === 0) {
     return null
   }
 
-  const versions = base.versions
+  const versions = base.versions as I[]
 
   if (!versions[0]?.versionNumber) return null
 
@@ -23,10 +24,10 @@ export const getLatestVersionForBase = async (base: any): Promise<any | null> =>
 }
 
 export const createSetVersionNumber = (collectionPair: Relation) => {
-  const hook: CollectionBeforeChangeHook = async ({ data, operation }) => {
+  const hook: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
     if (operation !== 'create') return
 
-    const base = await getResource(data.base, collectionPair.baseSlug)
+    const base = await getResource(data.base, collectionPair.baseSlug, req.payload)
 
     const prevLatestVersion = await getLatestVersionForBase(base)
 
@@ -42,8 +43,8 @@ export const createSetVersionNumber = (collectionPair: Relation) => {
 }
 
 export const createRemoveVersionFromBase = (collectionPair: Relation) => {
-  const hook: CollectionAfterDeleteHook = async ({ id }) => {
-    const baseResults = await payload.find({
+  const hook: CollectionAfterDeleteHook = async ({ req, id }) => {
+    const baseResults = await req.payload.find({
       collection: collectionPair.baseSlug,
       where: {
         versions: {
@@ -58,13 +59,13 @@ export const createRemoveVersionFromBase = (collectionPair: Relation) => {
       return
     }
 
-    const base = baseResults.docs[0]
+    const base = baseResults.docs[0] as unknown as BaseDocument
 
     const versionIds = base.versions
-      ? base.versions.filter(x => x !== id).map(x => getResourceId(x))
+      ? (base.versions as VersionDocument[]).map(x => getResourceId(x)).filter(x => x !== id)
       : []
 
-    await payload.update({
+    await req.payload.update({
       collection: collectionPair.baseSlug,
       id: base.id,
       data: {
@@ -77,19 +78,19 @@ export const createRemoveVersionFromBase = (collectionPair: Relation) => {
   return hook
 }
 
-export const createAddVersionToBase = (baseSlug: CollectionType) => {
-  const hook: CollectionAfterChangeHook = async ({ doc, operation }) => {
+export const createAddVersionToBase = (collectionPair: Relation) => {
+  const hook: CollectionAfterChangeHook = async ({ req, doc, operation }) => {
     if (operation !== 'create') return
 
     const baseId = getResourceId(doc.base)
 
-    const base = await getResource(baseId, baseSlug)
+    const base = await getResource<BaseDocument>(baseId, collectionPair.baseSlug, req.payload)
 
     const versionIds = base?.versions ? base.versions.map(x => getResourceId(x)) : []
 
     // something with, dont trigger hooks
-    await payload.update({
-      collection: baseSlug,
+    await req.payload.update({
+      collection: collectionPair.baseSlug,
       // @ts-ignore
       id: baseId,
       data: {
