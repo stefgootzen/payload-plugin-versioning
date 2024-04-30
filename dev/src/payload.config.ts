@@ -52,6 +52,6 @@ export default buildConfig({
   ],
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
-    transactionOptions: false,
+    transactionOptions: false, // todo: also do testing with transactions
   }),
 })

@@ -12,6 +12,7 @@ export const buildCreateVersionIfPassedOnBaseCreate = (collectionPair: Relation)
 
     let version
     try {
+      // todo: try to pass user here
       version = await req.payload.create({
         collection: collectionPair.versionSlug,
         data: {
@@ -19,12 +20,19 @@ export const buildCreateVersionIfPassedOnBaseCreate = (collectionPair: Relation)
           base: doc.id,
           ...versionData,
         },
+        req,
       })
     } catch (e) {
-      await req.payload.delete({
-        collection: collectionPair.baseSlug,
-        id: doc.id,
-      })
+      try {
+        await req.payload.delete({
+          collection: collectionPair.baseSlug,
+          id: doc.id,
+          req,
+        })
+      } catch (e) {
+        // If transactions are enabled, this will throw a 404, sincee the resource will already be rollbacked.
+        // Necessary for transactions
+      }
       return
     }
 
@@ -34,6 +42,7 @@ export const buildCreateVersionIfPassedOnBaseCreate = (collectionPair: Relation)
       data: {
         versions: [version.id],
       },
+      req,
     })
 
     return doc
@@ -56,6 +65,7 @@ export const buildDeleteCorrespondingVersions = (collectionPair: Relation) => {
         id: { in: versionIds },
       },
       depth: 0,
+      req,
     })
   }
 

@@ -100,7 +100,10 @@ describe('Base', () => {
 
     expect(bases.totalDocs).toBe(1)
     expect(versions.totalDocs).toBe(1)
+
+    expect(versions.docs[0]).toHaveProperty('createdBy') // true
   })
+
   it('rollbacks itself, when version data is passed, but required values for it are missing.', async () => {
     const baseData = {}
     // const token = await logInAdmin(url)
@@ -112,8 +115,6 @@ describe('Base', () => {
       ...baseData,
       version: firstVersionData,
     }
-
-    // todo: Insert in docs: Version data does not check for unknown fields. Only checks required data.
 
     await postBase(url, token, postData)
 

@@ -19,6 +19,7 @@ export const getResource = async <T extends Document>(
   resourceOrId: T | string,
   collection: string,
   payload: Payload,
+  req: Request,
 ): Promise<T> => {
   // @ts-ignore
   if (!isString(resourceOrId)) {
@@ -28,6 +29,7 @@ export const getResource = async <T extends Document>(
   const options = {
     collection: collection,
     id: resourceOrId as string,
+    req,
   }
 
   return payload.findByID(options) as Promise<T>

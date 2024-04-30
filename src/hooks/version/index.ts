@@ -27,7 +27,7 @@ export const createSetVersionNumber = (collectionPair: Relation) => {
   const hook: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
     if (operation !== 'create') return
 
-    const base = await getResource(data.base, collectionPair.baseSlug, req.payload)
+    const base = await getResource(data.base, collectionPair.baseSlug, req.payload, req)
 
     const prevLatestVersion = await getLatestVersionForBase(base)
 
@@ -51,6 +51,7 @@ export const createRemoveVersionFromBase = (collectionPair: Relation) => {
           contains: id,
         },
       },
+      req,
     })
 
     // In this case deleting of the annotation resulted in this version being deleted,
@@ -72,6 +73,7 @@ export const createRemoveVersionFromBase = (collectionPair: Relation) => {
         versions: versionIds,
       },
       depth: 0,
+      req,
     })
   }
 
@@ -84,7 +86,7 @@ export const createAddVersionToBase = (collectionPair: Relation) => {
 
     const baseId = getResourceId(doc.base)
 
-    const base = await getResource<BaseDocument>(baseId, collectionPair.baseSlug, req.payload)
+    const base = await getResource<BaseDocument>(baseId, collectionPair.baseSlug, req.payload, req)
 
     const versionIds = base?.versions ? base.versions.map(x => getResourceId(x)) : []
 
@@ -96,6 +98,7 @@ export const createAddVersionToBase = (collectionPair: Relation) => {
       data: {
         versions: [...versionIds, doc.id],
       },
+      req,
     })
 
     return doc
