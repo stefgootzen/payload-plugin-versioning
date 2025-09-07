@@ -1,40 +1,27 @@
-import { globalSetup, globalTeardown } from './helpers/setup'
-import payload from 'payload'
-import { cleanupCollections } from './helpers/cleanupCollections'
-import axios from 'axios'
+import { getPayload, type Payload } from 'payload'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import config from '@payload-config'
+import { cleanupCollections } from './helpers/cleanupCollections.js'
+import { devUser } from '../helpers/credentials.js'
 
-const postBase = async (url, token, data) => {
-  // To prevent axios from leaving an open handle:
-  // src: https://stackoverflow.com/questions/69169492/async-external-function-leaves-open-handles-jest-supertest-express
-  await process.nextTick(() => {})
+let payload: Payload
 
-  return axios.post(`${url}/api/bases`, data, {
-    timeout: 5000,
-    headers: {
-      Authorization: `JWT ${token}`,
-    },
-  })
-}
-
-let token
-let url
 beforeAll(async () => {
-  ;[url, token] = await globalSetup()
+  payload = await getPayload({ config })
 })
 
-afterAll(async () => {
-  await globalTeardown()
-})
+afterAll(async () => {})
 
 describe('Base', () => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   beforeEach(async () => {})
   afterEach(async () => {
-    await cleanupCollections()
+    await cleanupCollections(payload)
   })
   it('has .versions field', async () => {
     const versionField = payload.collections.bases?.config?.fields.find(
-      field => field?.name === 'versions',
+      // @ts-ignore
+      (field) => field?.name === 'versions',
     )
     expect(versionField).toBeDefined()
   })
@@ -61,9 +48,10 @@ describe('Base', () => {
   })
 
   it('does not create a version, if no version data is passed.', async () => {
-    const baseData = {}
-
-    await postBase(url, token, baseData)
+    return payload.create({
+      collection: 'bases',
+      data: {},
+    })
 
     const bases = await payload.find({
       collection: 'bases',
@@ -77,18 +65,27 @@ describe('Base', () => {
   })
 
   it('creates a version, if version data is passed.', async () => {
-    const baseData = {}
-    // const token = await logInAdmin(url)
+    const userResult = await payload.find({
+      collection: 'users',
+      where: {
+        email: { equals: devUser.email },
+      },
+    })
+
+    const user = userResult.docs[0]
 
     const firstVersionData = {
       someField: 'someValue',
     }
-    const postData = {
-      ...baseData,
-      version: firstVersionData,
-    }
 
-    await postBase(url, token, postData)
+    await payload.create({
+      collection: 'bases',
+      data: {},
+      context: {
+        version: firstVersionData,
+      },
+      user,
+    })
 
     const bases = await payload.find({
       collection: 'bases',
@@ -105,18 +102,17 @@ describe('Base', () => {
   })
 
   it('rollbacks itself, when version data is passed, but required values for it are missing.', async () => {
-    const baseData = {}
-    // const token = await logInAdmin(url)
-
     const firstVersionData = {
       wrongField: 'someValue',
     }
-    const postData = {
-      ...baseData,
-      version: firstVersionData,
-    }
 
-    await postBase(url, token, postData)
+    await payload.create({
+      collection: 'bases',
+      data: {},
+      context: {
+        version: firstVersionData,
+      },
+    })
 
     const bases = await payload.find({
       collection: 'bases',

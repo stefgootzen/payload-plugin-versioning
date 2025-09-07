@@ -1,12 +1,14 @@
-import { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload/types'
-import { Relation, VersionDocument } from '../../types'
+import { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
+import { Relation, VersionDocument } from '../../types.js'
 
 export const buildCreateVersionIfPassedOnBaseCreate = (collectionPair: Relation) => {
-  const hook: CollectionAfterChangeHook = async ({ doc, operation, req }) => {
+  const hook: CollectionAfterChangeHook = async ({ doc, operation, req, context }) => {
     if (operation !== 'create') return
 
-    // We run this afterChange, so we can also place the base on the version we create.
-    const versionData = req.body?.version
+    // @ts-ignore
+    // Retrieve the version data either from the HTTP request body (if called via POST)
+    // or from the Payload API context (if triggered internally by Payload).
+    const versionData = req.body?.version || context.version
 
     if (!versionData) return doc
 
@@ -57,7 +59,7 @@ export const buildDeleteCorrespondingVersions = (collectionPair: Relation) => {
       return
     }
 
-    const versionIds = doc.versions ? (doc.versions as VersionDocument[]).map(x => x.id) : []
+    const versionIds = doc.versions ? (doc.versions as VersionDocument[]).map((x) => x.id) : []
 
     await req.payload.delete({
       collection: collectionPair.versionSlug,
