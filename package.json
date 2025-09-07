@@ -1,50 +1,97 @@
 {
   "name": "@stefgootzen/payload-plugin-versioning",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "repository": "https://github.com/stefgootzen/payload-plugin-versioning",
   "description": "PayloadCMS plugin that sets up all necessary fields and hooks to enable collection versioning.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "files": [
-    "/dist",
-    "LICENSE.txt"
-  ],
-  "keywords": [
-    "payload",
-    "cms",
-    "plugin",
-    "typescript",
-    "one-to-many",
-    "versions"
+    "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "test": "cd dev && yarn test",
-    "lint": "eslint src",
-    "lint:fix": "eslint --fix --ext .ts,.tsx src",
-    "clean": "rimraf dist && rimraf dev/yarn.lock",
-    "prepublishOnly": "yarn clean && yarn build && cd dev && yarn test"
-  },
-  "author": "Stef Gootzen",
-  "license": "MIT",
-  "peerDependencies": {
-    "payload": "^2.0.0"
+    "build": "npm run copyfiles && npm run build:types && npm run build:swc",
+    "build:swc": "swc ./src -d ./dist --config-file .swcrc --strip-leading-paths",
+    "build:types": "tsc --outDir dist --rootDir ./src",
+    "clean": "rimraf {dist,*.tsbuildinfo}",
+    "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png,json}\" dist/",
+    "dev": "next dev dev --turbo",
+    "dev:generate-importmap": "npm run dev:payload generate:importmap",
+    "dev:generate-types": "npm run dev:payload generate:types",
+    "dev:payload": "cross-env PAYLOAD_CONFIG_PATH=./dev/payload.config.ts payload",
+    "generate:importmap": "npm run dev:generate-importmap",
+    "generate:types": "npm run dev:generate-types",
+    "lint": "eslint",
+    "lint:fix": "eslint ./src --fix",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "vitest"
   },
   "devDependencies": {
-    "@payloadcms/eslint-config": "^0.0.1",
-    "@types/jest": "^29.5.12",
-    "@typescript-eslint/eslint-plugin": "5.12.1",
-    "@typescript-eslint/parser": "5.12.1",
-    "dotenv": "^8.2.0",
-    "eslint": "^8.19.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "2.25.4",
-    "eslint-plugin-prettier": "^4.0.0",
-    "payload": "^2.0.14",
-    "prettier": "^2.7.1",
-    "react": "^18.0.0",
-    "typescript": "^4.8.4",
-    "webpack": "^5.90.3"
-  }
+    "@eslint/eslintrc": "^3.3.1",
+    "@payloadcms/db-mongodb": "3.54.0",
+    "@payloadcms/eslint-config": "3.9.0",
+    "@payloadcms/next": "3.54.0",
+    "@payloadcms/richtext-lexical": "3.54.0",
+    "@payloadcms/ui": "3.54.0",
+    "@swc-node/register": "1.11.1",
+    "@swc/cli": "0.6.0",
+    "@swc/core": "^1.13.5",
+    "@types/node": "^22.18.1",
+    "@types/react": "19.1.12",
+    "@types/react-dom": "19.1.9",
+    "copyfiles": "2.4.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.35.0",
+    "eslint-config-next": "15.4.4",
+    "graphql": "^16.11.0",
+    "mongodb-memory-server": "10.2.0",
+    "next": "15.5.2",
+    "open": "^10.2.0",
+    "payload": "3.54.0",
+    "prettier": "^3.6.2",
+    "qs-esm": "7.0.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "rimraf": "3.0.2",
+    "sharp": "0.34.2",
+    "sort-package-json": "^2.15.1",
+    "typescript": "5.7.3",
+    "vite": "^7.1.4",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "payload": "^3.54.0"
+  },
+  "engines": {
+    "node": "^18.20.2 || >=20.9.0",
+    "npm": "^9 || ^10"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "npm": {
+    "onlyBuiltDependencies": [
+      "sharp",
+      "esbuild",
+      "unrs-resolver"
+    ]
+  },
+  "registry": "https://registry.npmjs.org/"
 }

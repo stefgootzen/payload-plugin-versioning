@@ -1,5 +1,5 @@
-import { Payload } from 'payload'
-import { Document } from './types'
+import { Payload, PayloadRequest } from 'payload'
+import { Document } from './types.js'
 
 export const isString = (thing: any) => {
   return typeof thing === 'string' || thing instanceof String
@@ -19,7 +19,7 @@ export const getResource = async <T extends Document>(
   resourceOrId: T | string,
   collection: string,
   payload: Payload,
-  req: Request,
+  req: PayloadRequest,
 ): Promise<T> => {
   // @ts-ignore
   if (!isString(resourceOrId)) {

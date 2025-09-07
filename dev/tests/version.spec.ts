@@ -1,30 +1,33 @@
-import { globalSetup, globalTeardown } from './helpers/setup'
-import payload from 'payload'
-import { cleanupCollections } from './helpers/cleanupCollections'
+import { getPayload, type Payload } from 'payload'
+import { cleanupCollections } from './helpers/cleanupCollections.js'
+import config from '@payload-config'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+
+let payload: Payload
 
 beforeAll(async () => {
-  await globalSetup()
+  payload = await getPayload({ config })
 })
 
-afterAll(async () => {
-  await globalTeardown()
-})
+afterAll(async () => {})
 
 describe('Version', () => {
   beforeEach(async () => {})
   afterEach(async () => {
-    await cleanupCollections()
+    await cleanupCollections(payload)
   })
 
   it('has .versionNumber field', async () => {
     const versionField = payload.collections.versions?.config?.fields.find(
-      field => field?.name === 'versionNumber',
+      // @ts-ignore
+      (field) => field?.name === 'versionNumber',
     )
     expect(versionField).toBeDefined()
   })
   it('has .base field', async () => {
     const baseField = payload.collections.versions?.config?.fields.find(
-      field => field?.name === 'base',
+      // @ts-ignore
+      (field) => field?.name === 'base',
     )
     expect(baseField).toBeDefined()
   })
@@ -53,7 +56,7 @@ describe('Version', () => {
       id: base.id,
     })
 
-    expect(base.versions.length).toBe(1)
+    expect(base.versions?.length).toBe(1)
   })
 
   it('creates versionNumbers based on the latest known (undeleted) version', async () => {
