@@ -1,11 +1,11 @@
+// import payload from 'payload'
+import { getResource, getResourceId } from '../../utils.js'
+import { BaseDocument, Relation, VersionDocument } from '../../types.js'
 import {
   CollectionAfterChangeHook,
   CollectionAfterDeleteHook,
   CollectionBeforeChangeHook,
-} from 'payload/types'
-// import payload from 'payload'
-import { getResource, getResourceId } from '../../utils'
-import { BaseDocument, Relation, VersionDocument } from '../../types'
+} from 'payload'
 
 export const getLatestVersionForBase = async <T extends BaseDocument, I extends VersionDocument>(
   base: T,
@@ -63,7 +63,7 @@ export const createRemoveVersionFromBase = (collectionPair: Relation) => {
     const base = baseResults.docs[0] as unknown as BaseDocument
 
     const versionIds = base.versions
-      ? (base.versions as VersionDocument[]).map(x => getResourceId(x)).filter(x => x !== id)
+      ? (base.versions as VersionDocument[]).map((x) => getResourceId(x)).filter((x) => x !== id)
       : []
 
     await req.payload.update({
@@ -88,7 +88,7 @@ export const createAddVersionToBase = (collectionPair: Relation) => {
 
     const base = await getResource<BaseDocument>(baseId, collectionPair.baseSlug, req.payload, req)
 
-    const versionIds = base?.versions ? base.versions.map(x => getResourceId(x)) : []
+    const versionIds = base?.versions ? base.versions.map((x) => getResourceId(x)) : []
 
     // something with, dont trigger hooks
     await req.payload.update({
