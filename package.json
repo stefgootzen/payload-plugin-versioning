@@ -72,8 +72,8 @@
     "payload": "^3.54.0"
   },
   "engines": {
-    "node": "^18.20.2 || >=20.9.0",
-    "npm": "^9 || ^10"
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
   },
   "publishConfig": {
     "exports": {
